@@ -20,6 +20,7 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
     @IBOutlet weak var indicator: UIActivityIndicatorView!
     
     
+ 
     @IBOutlet weak var FirstName: UILabel!
     
     @IBOutlet weak var loginBtn: UIButton!
@@ -65,6 +66,8 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+    
         //  makeGetCall()
         // Do any additional setup after loading the view, typically from a nib.
         
@@ -76,6 +79,7 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         pass_border.borderWidth = pass_width
         password.layer.addSublayer(pass_border)
         password.layer.masksToBounds = true
+        
         password.returnKeyType = .done
         password.delegate = self;
         
@@ -86,8 +90,10 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         username_border.frame = CGRect(x: 0, y: username.frame.size.height - username_width, width:  username.frame.size.width, height: username.frame.size.height)
         username_border.borderWidth = username_width
         username.layer.addSublayer(username_border)
-        username.returnKeyType = .next
         username.layer.masksToBounds = true
+        
+        username.returnKeyType = .next
+        username.keyboardType = UIKeyboardType.emailAddress
         username.delegate = self;
         
         
@@ -95,7 +101,7 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         
         
         loginBtn.backgroundColor = .clear
-        loginBtn.layer.cornerRadius = 15
+        loginBtn.layer.cornerRadius = 20
         loginBtn.layer.borderWidth = 2
         loginBtn.layer.borderColor = UIColor.white.cgColor
         //  loginBtn.contentHorizontalAlignment = .center
@@ -104,6 +110,32 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         
         
     }
+    
+    
+    
+    func animateTextField(textField: UITextField, up: Bool)
+    {
+        let movementDistance:CGFloat = -60
+        let movementDuration: Double = 0.3
+        
+        var movement:CGFloat = 0
+        if up
+        {
+            movement = movementDistance
+        }
+        else
+        {
+            movement = -movementDistance
+        }
+        UIView.beginAnimations("animateTextField", context: nil)
+        UIView.setAnimationBeginsFromCurrentState(true)
+        UIView.setAnimationDuration(movementDuration)
+        self.view.frame = self.view.frame.offsetBy(dx: 0, dy: movement)
+        UIView.commitAnimations()
+    }
+    
+    
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -239,11 +271,17 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         return true
     }
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.animateTextField(textField: textField, up:true)
+    }
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         if username.text == "" {
             username.textAlignment = .right
             username.placeholder="شناسه محک/ایمیل/شماره بسته"
         }
+        
+        self.animateTextField(textField: textField, up:false)
     }
     
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
