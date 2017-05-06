@@ -45,7 +45,6 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
             // print(MyuserObject!.userInfo![0].firstName!)
             
             
-            
         }
         
     }
@@ -98,8 +97,6 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         
         
         
-        
-        
         loginBtn.backgroundColor = .clear
         loginBtn.layer.cornerRadius = 20
         loginBtn.layer.borderWidth = 2
@@ -115,7 +112,7 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
     
     func animateTextField(textField: UITextField, up: Bool)
     {
-        let movementDistance:CGFloat = -60
+        let movementDistance:CGFloat = -110
         let movementDuration: Double = 0.3
         
         var movement:CGFloat = 0
