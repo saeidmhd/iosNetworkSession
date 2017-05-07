@@ -1,51 +1,42 @@
 //
-//  ViewController.swift
+//  ForgetPassVC.swift
 //  NetworkSessionSample
 //
-//  Created by Saeid.mhd@gmail on 4/15/17.
+//  Created by Saeid.mhd@gmail on 5/7/17.
 //  Copyright © 2017 Saeid mohammadi. All rights reserved.
 //
 
 import UIKit
 
-class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,URLSessionDelegate,UITextFieldDelegate {
+class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,URLSessionDelegate,UITextFieldDelegate {
     
-    
-    // @IBOutlet weak var idicator: UIActivityIndicatorView!
-    
-    var userObject: Json4Swift_Base! = nil
-    var MyuserObject: Json4Swift_Base! = nil
+    var userObject: retrieve_Base! = nil
     static var jsonStr : String?
+    var MyuserObject: retrieve_Base! = nil
+
+    @IBOutlet weak var username: UITextField!
+    
+    var currentElementName:String = ""
+    var elementValue: String = ""
     
     @IBOutlet weak var indicator: UIActivityIndicatorView!
     
+    @IBOutlet weak var Cancel: UIButton!
     
     
-    @IBOutlet weak var ForgetPass: UIButton!
-
- 
-    @IBOutlet weak var FirstName: UILabel!
+    @IBOutlet weak var SendPass: UIButton!
     
-    @IBOutlet weak var loginBtn: UIButton!
-    
-    
-    @IBAction func ForgetPass(_ sender: UIButton) {
-        
-         sender.setTitleColor(UIColor.brown, for: UIControlState.highlighted)
-    }
-    
-    @IBAction func loginBtn(_ sender: UIButton) {
-        
+    @IBAction func SendPass(_ sender: UIButton) {
         
         sender.setTitleColor(UIColor.brown, for: UIControlState.highlighted)
-       
+        
         //loginBtn.layer.borderColor = UIColor.brown.cgColor
         
-        if self.username.text == "" || self.password.text == "" {
+        if self.username.text == ""  {
             
             //Alert to tell the user that there was an error because they didn't fill anything in the textfields because they didn't fill anything in
             
-            let alertController = UIAlertController(title: "خطا", message: "لطفا ایمیل و رمز عبور خود را وارد کنید", preferredStyle: .alert)
+            let alertController = UIAlertController(title: "خطا", message: "لطفا ایمیل خود را وارد کنید", preferredStyle: .alert)
             
             let defaultAction = UIAlertAction(title: "باشه!", style: .cancel, handler: nil)
             alertController.addAction(defaultAction)
@@ -55,75 +46,37 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
             
         }else {
             
-            makeGetCall(username: self.username.text!,password: self.password.text!)
+            makeGetCall(username: self.username.text!)
             // print(MyuserObject!.userInfo![0].firstName!)
             
             
         }
         
+        
+        
+        
     }
     
     func startHighlight(sender: UIButton) {
         sender.layer.borderColor = UIColor.brown.cgColor
-       
+        
     }
     func stopHighlight(sender: UIButton) {
         sender.layer.borderColor = UIColor.white.cgColor
-      
+        
     }
-    
-    
-
-    
-    
-   
-    
-    @IBOutlet weak var password: UITextField!
-    
-    @IBOutlet weak var username: UITextField!
-    
-    
-    
-    var currentElementName:String = ""
-    var elementValue: String = ""
-    var parser = XMLParser()
-    var expectedContentLength = 0
-    var buffer:NSMutableData = NSMutableData()
-    var placeholder : UILabel!
-    
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        loginBtn.addTarget(self, action: #selector(startHighlight), for: .touchDown)
-        loginBtn.addTarget(self, action: #selector(stopHighlight), for: .touchUpInside)
-        loginBtn.addTarget(self, action: #selector(stopHighlight), for: .touchUpOutside)
         
-    
-        
+        Cancel.addTarget(self, action: #selector(startHighlight), for: .touchDown)
+        Cancel.addTarget(self, action: #selector(stopHighlight), for: .touchUpInside)
+        Cancel.addTarget(self, action: #selector(stopHighlight), for: .touchUpOutside)
         
         
-        
-        
-        
-        
-    
-        //  makeGetCall()
-        // Do any additional setup after loading the view, typically from a nib.
-        
-        
-        let pass_border = CALayer()
-        let pass_width = CGFloat(2.0)
-        pass_border.borderColor = UIColor.white.cgColor
-        pass_border.frame = CGRect(x: 0, y: password.frame.size.height - pass_width, width:  password.frame.size.width, height: password.frame.size.height)
-        pass_border.borderWidth = pass_width
-        password.layer.addSublayer(pass_border)
-        password.layer.masksToBounds = true
-        
-        password.returnKeyType = .done
-        password.delegate = self;
+        SendPass.addTarget(self, action: #selector(startHighlight), for: .touchDown)
+        SendPass.addTarget(self, action: #selector(stopHighlight), for: .touchUpInside)
+        SendPass.addTarget(self, action: #selector(stopHighlight), for: .touchUpOutside)
         
         
         let username_border = CALayer()
@@ -134,67 +87,44 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         username.layer.addSublayer(username_border)
         username.layer.masksToBounds = true
         
-        username.returnKeyType = .next
+        username.returnKeyType = .done
         username.keyboardType = UIKeyboardType.emailAddress
         username.delegate = self;
         
         
         
-        loginBtn.backgroundColor = .clear
-        loginBtn.layer.cornerRadius = 20
-        loginBtn.layer.borderWidth = 2
-        loginBtn.layer.borderColor = UIColor.white.cgColor
+        SendPass.backgroundColor = .clear
+        SendPass.layer.cornerRadius = 22
+        SendPass.layer.borderWidth = 2
+        SendPass.layer.borderColor = UIColor.white.cgColor
         //  loginBtn.contentHorizontalAlignment = .center
-        loginBtn.contentVerticalAlignment = .center
+        SendPass.contentVerticalAlignment = .center
         
         
+        Cancel.backgroundColor = .clear
+        Cancel.layer.cornerRadius = 22
+        Cancel.layer.borderWidth = 2
+        Cancel.layer.borderColor = UIColor.white.cgColor
+        //  loginBtn.contentHorizontalAlignment = .center
+        Cancel.contentVerticalAlignment = .center
         
         
+
+        // Do any additional setup after loading the view.
     }
     
     
-    
-    func animateTextField(textField: UITextField, up: Bool)
-    {
-        let movementDistance:CGFloat = -110
-        let movementDuration: Double = 0.3
-        
-        var movement:CGFloat = 0
-        if up
-        {
-            movement = movementDistance
-        }
-        else
-        {
-            movement = -movementDistance
-        }
-        UIView.beginAnimations("animateTextField", context: nil)
-        UIView.setAnimationBeginsFromCurrentState(true)
-        UIView.setAnimationDuration(movementDuration)
-        self.view.frame = self.view.frame.offsetBy(dx: 0, dy: movement)
-        UIView.commitAnimations()
-    }
-    
-    
-    
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
-    func makeGetCall(username:String, password:String) {
+    func makeGetCall(username:String) {
         
         
         let AppSign = "05b14e27-f2cd-4329-8269-cbc62b182e78"
-        let jsonString = "[{\"Username\":\"" + username + "\",\"Password\":\"" + password + "\"}]";
+        let jsonString = "[{\"UserName\":\"" + username + "\"}]";
         
-        let methodName = "ValidateUser"
+        let methodName = "ForgetPassword"
         
         let text = String(format: "<?xml version='1.0' encoding='utf-8'?><soap:Envelope xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/'><soap:Body><%@ xmlns='http://tempuri.org/'><AppSign>%d</AppSign><jsonString>%@</jsonString></%@></soap:Body></soap:Envelope>", methodName, AppSign, jsonString, methodName)
         
-        let url = URL(string: "http://login.mahaksoft.com/loginservices.asmx?op=ValidateUser")
+        let url = URL(string: "http://login.mahaksoft.com/loginservices.asmx?op=ForgetPassword")
         
         let soapMessage = text
         let msgLength = String(describing: soapMessage.characters.count)
@@ -207,7 +137,7 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         
         let session = URLSession.shared // or let session = URLSession(configuration: URLSessionConfiguration.default)
         
-        self.indicator.startAnimating()
+       self.indicator.startAnimating()
         
         
         
@@ -236,18 +166,18 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
     
     func parserDidEndDocument(_ parser: XMLParser) {
         
-        ViewController.jsonStr = elementValue
+        ForgetPassVC.jsonStr = elementValue
         
         var dictonary:NSDictionary?
         
-        if let data = ViewController.jsonStr?.data(using: String.Encoding.utf8) {
+        if let data = ForgetPassVC.jsonStr?.data(using: String.Encoding.utf8) {
             
             do {
                 dictonary = try JSONSerialization.jsonObject(with: data, options: []) as? [String:AnyObject] as NSDictionary?
                 
                 if let dictonary = dictonary
                 {
-                    let userObject = Json4Swift_Base(dictionary:dictonary)
+                    let userObject = retrieve_Base(dictionary:dictonary)
                     
                     
                     DispatchQueue.main.async {
@@ -261,8 +191,16 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
                         if self.MyuserObject!.result! == "True"{
                             
                             print(self.MyuserObject!.result!)
-                            let vc = self.storyboard?.instantiateViewController(withIdentifier: "ResultView")
-                            self.present(vc!, animated: true, completion: nil)
+                            
+                            
+                            let alertController = UIAlertController(title: "ارسال رمز", message: self.MyuserObject!.msg!, preferredStyle: .alert)
+                            
+                            let defaultAction = UIAlertAction(title: "ممنون!", style: .cancel, handler: nil)
+                            alertController.addAction(defaultAction)
+                            
+                            self.present(alertController, animated: true, completion: nil)
+                            
+                    
                             
                         } else {
                             
@@ -275,14 +213,10 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
                             
                             self.present(alertController, animated: true, completion: nil)
                             self.username.text = ""
-                            self.password.text = ""
                             self.username.becomeFirstResponder()
                             
                             
-                            
                         }
-                        
-                        
                         
                         
                         
@@ -298,7 +232,7 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
     }
     
     func parser(_ parser: XMLParser, foundCharacters string: String) {
-        if currentElementName == "ValidateUserResult" {
+        if currentElementName == "ForgetPasswordResult" {
             self.elementValue += string
         }
     }
@@ -312,9 +246,9 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         return true
     }
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        self.animateTextField(textField: textField, up:true)
-    }
+   // func textFieldDidBeginEditing(_ textField: UITextField) {
+  //      self.animateTextField(textField: textField, up:true)
+ //   }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         if username.text == "" {
@@ -322,33 +256,24 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
             username.placeholder="شناسه محک/ایمیل/شماره بسته"
         }
         
-        self.animateTextField(textField: textField, up:false)
+       // self.animateTextField(textField: textField, up:false)
+    }
+
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
     }
     
-    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        MyuserObject = userObject
+
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
     }
-    
-    func isEmailValid(email: String) -> Bool {
-        
-        return (email.lowercased().range(of:"@") != nil)
-        
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        username.resignFirstResponder()
-        if textField == username { // Switch focus to other text field
-            password.becomeFirstResponder()
-        }else if textField == password{
-            
-            password.resignFirstResponder()
-            
-        }
-        return true
-    }
-    
-    
+    */
+
 }
-
-
-
