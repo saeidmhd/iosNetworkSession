@@ -94,16 +94,16 @@ class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,UR
         
         
         SendPass.backgroundColor = .clear
-        SendPass.layer.cornerRadius = 22
-        SendPass.layer.borderWidth = 2
+        SendPass.layer.cornerRadius = 15
+        SendPass.layer.borderWidth = 1.5
         SendPass.layer.borderColor = UIColor.white.cgColor
         //  loginBtn.contentHorizontalAlignment = .center
         SendPass.contentVerticalAlignment = .center
         
         
         Cancel.backgroundColor = .clear
-        Cancel.layer.cornerRadius = 22
-        Cancel.layer.borderWidth = 2
+        Cancel.layer.cornerRadius = 15
+        Cancel.layer.borderWidth = 1.5
         Cancel.layer.borderColor = UIColor.white.cgColor
         //  loginBtn.contentHorizontalAlignment = .center
         Cancel.contentVerticalAlignment = .center
@@ -156,6 +156,30 @@ class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,UR
         task.resume()
         
     }
+    
+    
+    
+    func animateTextField(textField: UITextField, up: Bool)
+    {
+        let movementDistance:CGFloat = -50
+        let movementDuration: Double = 0.3
+        
+        var movement:CGFloat = 0
+        if up
+        {
+            movement = movementDistance
+        }
+        else
+        {
+            movement = -movementDistance
+        }
+        UIView.beginAnimations("animateTextField", context: nil)
+        UIView.setAnimationBeginsFromCurrentState(true)
+        UIView.setAnimationDuration(movementDuration)
+        self.view.frame = self.view.frame.offsetBy(dx: 0, dy: movement)
+        UIView.commitAnimations()
+    }
+    
     
     
     func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String] = [:]) {
@@ -246,6 +270,10 @@ class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,UR
         return true
     }
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.animateTextField(textField: textField, up:true)
+    }
+    
    // func textFieldDidBeginEditing(_ textField: UITextField) {
   //      self.animateTextField(textField: textField, up:true)
  //   }
@@ -256,13 +284,21 @@ class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,UR
             username.placeholder="شناسه محک/ایمیل/شماره بسته"
         }
         
-       // self.animateTextField(textField: textField, up:false)
+        self.animateTextField(textField: textField, up:false)
     }
 
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        username.resignFirstResponder()
+        if textField == username { // Switch focus to other text field
+            SendPass.becomeFirstResponder()
+        }
+        return true
     }
     
 

@@ -34,19 +34,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         switch (screenHeight)
         {
-        // iPhone 4s
-        case 480:
-            storyboard = UIStoryboard(name: "Main_4s", bundle: nil)
-            break
-        // iPhone SE
+        // iPhone 4s-480
+        
+        // iPhone SE-568
         case 568:
-            storyboard = UIStoryboard(name: "Main_SE", bundle: nil)
+            storyboard = UIStoryboard(name: "MainSE", bundle: nil)
             break
-        // iPhone 6s , 7
-        case 667:
-            storyboard = UIStoryboard(name: "Main_6s", bundle: nil)
-            break
-        // iPhone 6 Plus , 7 plus
+        // iPhone 6s , 7-667
+        // iPhone 6 Plus , 7 plus-736
         case 736:
             storyboard = UIStoryboard(name: "Main", bundle: nil)
             break

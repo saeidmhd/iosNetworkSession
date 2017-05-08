@@ -115,7 +115,7 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         
         
         let pass_border = CALayer()
-        let pass_width = CGFloat(2.0)
+        let pass_width = CGFloat(1.5)
         pass_border.borderColor = UIColor.white.cgColor
         pass_border.frame = CGRect(x: 0, y: password.frame.size.height - pass_width, width:  password.frame.size.width, height: password.frame.size.height)
         pass_border.borderWidth = pass_width
@@ -127,7 +127,7 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         
         
         let username_border = CALayer()
-        let username_width = CGFloat(2.0)
+        let username_width = CGFloat(1.5)
         username_border.borderColor = UIColor.white.cgColor
         username_border.frame = CGRect(x: 0, y: username.frame.size.height - username_width, width:  username.frame.size.width, height: username.frame.size.height)
         username_border.borderWidth = username_width
@@ -141,8 +141,8 @@ class ViewController: UIViewController,XMLParserDelegate,URLSessionDataDelegate,
         
         
         loginBtn.backgroundColor = .clear
-        loginBtn.layer.cornerRadius = 20
-        loginBtn.layer.borderWidth = 2
+        loginBtn.layer.cornerRadius = 16
+        loginBtn.layer.borderWidth = 1.5
         loginBtn.layer.borderColor = UIColor.white.cgColor
         //  loginBtn.contentHorizontalAlignment = .center
         loginBtn.contentVerticalAlignment = .center
