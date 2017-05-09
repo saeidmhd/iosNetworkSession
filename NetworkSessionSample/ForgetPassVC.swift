@@ -16,12 +16,19 @@ class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,UR
 
     @IBOutlet weak var username: UITextField!
     
+    @IBAction func cancel(_ sender: AnyObject) {
+        
+        let username = self.username.text
+        performSegue(withIdentifier: "cancel", sender: username)
+    }
     var currentElementName:String = ""
     var elementValue: String = ""
     
     @IBOutlet weak var indicator: UIActivityIndicatorView!
     
     @IBOutlet weak var Cancel: UIButton!
+    
+    var stringPassed = ""
     
     
     @IBOutlet weak var SendPass: UIButton!
@@ -40,7 +47,6 @@ class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,UR
             
             let defaultAction = UIAlertAction(title: "باشه!", style: .cancel, handler: nil)
             alertController.addAction(defaultAction)
-            
             self.present(alertController, animated: true, completion: nil)
             
             
@@ -67,6 +73,16 @@ class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,UR
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
+        //Looks for single or multiple taps.
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(ForgetPassVC.dismissKeyboard))
+        
+        //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
+        //tap.cancelsTouchesInView = false
+        
+        view.addGestureRecognizer(tap)
         
         
         Cancel.addTarget(self, action: #selector(startHighlight), for: .touchDown)
@@ -111,6 +127,13 @@ class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,UR
         
 
         // Do any additional setup after loading the view.
+    }
+    
+    
+    //Calls this function when the tap is recognized.
+    func dismissKeyboard() {
+        //Causes the view (or one of its embedded text fields) to resign the first responder status.
+        view.endEditing(true)
     }
     
     
@@ -219,7 +242,12 @@ class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,UR
                             
                             let alertController = UIAlertController(title: "ارسال رمز", message: self.MyuserObject!.msg!, preferredStyle: .alert)
                             
-                            let defaultAction = UIAlertAction(title: "ممنون!", style: .cancel, handler: nil)
+                            let defaultAction = UIAlertAction(title: "ممنون!", style: .cancel, handler: { _ in
+                                let VC = self.storyboard?.instantiateViewController(withIdentifier: "MainStory") as! ViewController
+                               
+                                self.present(VC, animated: true, completion: nil)
+                            })
+
                             alertController.addAction(defaultAction)
                             
                             self.present(alertController, animated: true, completion: nil)
@@ -254,6 +282,8 @@ class ForgetPassVC: UIViewController,XMLParserDelegate,URLSessionDataDelegate,UR
         }
         
     }
+    
+    
     
     func parser(_ parser: XMLParser, foundCharacters string: String) {
         if currentElementName == "ForgetPasswordResult" {
